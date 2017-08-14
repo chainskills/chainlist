@@ -1,58 +1,89 @@
 App = {
   web3Provider: null,
   contracts: {},
+  account: 0x0,
 
   init: function() {
-    // Load articles
-    var articlesRow = $('#articlesRow');
-    var articleTemplate = $('#articleTemplate');
-
-    articleTemplate.find('.panel-title').text("article one");
-    articleTemplate.find('.article-description').text("Description for this article");
-    articleTemplate.find('.article-price').text("10.23");
-    articleTemplate.find('.article-seller').text("0x01234567890123456789012345678901");
-
-    articlesRow.append(articleTemplate.html());
-
     return App.initWeb3();
   },
 
   initWeb3: function() {
-    /*
-     * Replace me...
-     */
-
+    // Initialize web3 and set the provider to the testRPC.
+    if (typeof web3 !== 'undefined') {
+      App.web3Provider = web3.currentProvider;
+      web3 = new Web3(web3.currentProvider);
+    } else {
+      // set the provider you want from Web3.providers
+      App.web3Provider = new Web3.providers.HttpProvider('http://localhost:8545');
+      web3 = new Web3(App.web3Provider);
+    }
+    App.displayAccountInfo();
     return App.initContract();
   },
 
+  displayAccountInfo: function() {
+    web3.eth.getCoinbase(function(err, account) {
+      if (err === null) {
+        App.account = account;
+        $("#account").text(account);
+        web3.eth.getBalance(account, function(err, balance) {
+          if (err === null) {
+            $("#accountBalance").text(web3.fromWei(balance, "ether") + " ETH");
+          }
+        });
+      }
+    });
+  },
+
   initContract: function() {
-    /*
-     * Replace me...
-     */
+    $.getJSON('ChainList.json', function(chainListArtifact) {
+      // Get the necessary contract artifact file and use it to instantiate a truffle contract abstraction.
+      App.contracts.ChainList = TruffleContract(chainListArtifact);
 
-    return App.bindEvents();
+      // Set the provider for our contract.
+      App.contracts.ChainList.setProvider(App.web3Provider);
+
+      // Retrieve the article from the smart contract
+      return App.reloadArticles();
+    });
   },
 
-  bindEvents: function() {
-    $(document).on('click', '.btn-adopt', App.handleAdopt);
+
+  reloadArticles: function() {
+    // refresh account information because the balance may have changed
+    App.displayAccountInfo();
+
+    App.contracts.ChainList.deployed().then(function(instance) {
+      return instance.getArticle.call();
+    }).then(function(article) {
+      if (article[0] == 0x0) {
+        // no article
+        return;
+      }
+
+      // Retrieve and clear the article placeholder
+      var articlesRow = $('#articlesRow');
+      articlesRow.empty();
+
+      // Retrieve and fill the article template
+      var articleTemplate = $('#articleTemplate');
+      articleTemplate.find('.panel-title').text(article[1]);
+      articleTemplate.find('.article-description').text(article[2]);
+      articleTemplate.find('.article-price').text(web3.fromWei(article[3], "ether"));
+
+      var seller = article[0];
+      if (seller == App.account) {
+        seller = "You";
+      }
+
+      articleTemplate.find('.article-seller').text(seller);
+
+      // add this new article
+      articlesRow.append(articleTemplate.html());
+    }).catch(function(err) {
+      console.log(err.message);
+    });
   },
-
-  handleAdopt: function() {
-    event.preventDefault();
-
-    var petId = parseInt($(event.target).data('id'));
-
-    /*
-     * Replace me...
-     */
-  },
-
-  markAdopted: function(adopters, account) {
-    /*
-     * Replace me...
-     */
-  }
-
 };
 
 $(function() {
