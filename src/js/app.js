@@ -48,7 +48,6 @@ App = {
     });
   },
 
-
   reloadArticles: function() {
     // refresh account information because the balance may have changed
     App.displayAccountInfo();
@@ -82,6 +81,29 @@ App = {
       articlesRow.append(articleTemplate.html());
     }).catch(function(err) {
       console.log(err.message);
+    });
+  },
+
+  sellArticle: function() {
+    // retrieve details of the article
+    var _article_name = $("#article_name").val();
+    var _description = $("#article_description").val();
+    var _price = web3.toWei(parseInt($("#article_price").val() || 0), "ether");
+
+    if ((_article_name.trim() == '') || (_price == 0)) {
+      // nothing to sell
+      return false;
+    }
+
+    App.contracts.ChainList.deployed().then(function(instance) {
+      return instance.sellArticle(_article_name, _description, _price, {
+        from: App.account,
+        gas: 500000
+      });
+    }).then(function(result) {
+      App.reloadArticles();
+    }).catch(function(err) {
+      console.error(err);
     });
   },
 };
