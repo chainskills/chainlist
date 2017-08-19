@@ -43,6 +43,9 @@ App = {
       // Set the provider for our contract.
       App.contracts.ChainList.setProvider(App.web3Provider);
 
+      // Listen for events
+      App.listenToEvents();
+
       // Retrieve the article from the smart contract
       return App.reloadArticles();
     });
@@ -101,9 +104,22 @@ App = {
         gas: 500000
       });
     }).then(function(result) {
-      App.reloadArticles();
+      
     }).catch(function(err) {
       console.error(err);
+    });
+  },
+
+  // Listen for events raised from the contract
+  listenToEvents: function() {
+    App.contracts.ChainList.deployed().then(function(instance) {
+      instance.sellArticleEvent({}, {
+        fromBlock: 0,
+        toBlock: 'latest'
+      }).watch(function(error, event) {
+        $("#events").append('<li class="list-group-item">' + event.args._name + ' is for sale' + '</li>');
+        App.reloadArticles();
+      });
     });
   },
 };
