@@ -49,13 +49,11 @@ contract('ChainList', function(accounts) {
         articleDescription,
         web3.toWei(articlePrice, "ether"), {from: seller}
       );
-    }).then(function() {
-      return watcher.get();
-    }).then(function(events) {
-      assert.equal(events.length, 1, "should have received one event");
-      assert.equal(events[0].args._seller, seller, "seller must be " + seller);
-      assert.equal(events[0].args._name, articleName, "article name must be " + articleName);
-      assert.equal(events[0].args._price.toNumber(), web3.toWei(articlePrice, "ether"), "article price must be " + web3.toWei(articlePrice, "ether"));
+    }).then(function(receipt) {
+      assert.equal(receipt.logs.length, 1, "should have received one event");
+      assert.equal(receipt.logs[0].args._seller, seller, "seller must be " + seller);
+      assert.equal(receipt.logs[0].args._name, articleName, "article name must be " + articleName);
+      assert.equal(receipt.logs[0].args._price.toNumber(), web3.toWei(articlePrice, "ether"), "article price must be " + web3.toWei(articlePrice, "ether"));
     });
   });
 });
