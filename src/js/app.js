@@ -67,18 +67,34 @@ App = {
       var articlesRow = $('#articlesRow');
       articlesRow.empty();
 
+      var price = web3.fromWei(article[4], "ether");
+
       // Retrieve and fill the article template
       var articleTemplate = $('#articleTemplate');
-      articleTemplate.find('.panel-title').text(article[1]);
-      articleTemplate.find('.article-description').text(article[2]);
-      articleTemplate.find('.article-price').text(web3.fromWei(article[3], "ether"));
+      articleTemplate.find('.panel-title').text(article[2]);
+      articleTemplate.find('.article-description').text(article[3]);
+      articleTemplate.find('.article-price').text(price);
+      articleTemplate.find('.btn-buy').attr('data-value', price);
 
+      // seller
       var seller = article[0];
       if (seller == App.account) {
         seller = "You";
       }
-
       articleTemplate.find('.article-seller').text(seller);
+
+      // buyer
+      var buyer = article[1];
+      if (buyer == App.account) {
+        buyer = "You";
+      } else if (buyer == 0x0) {
+        buyer = "No one yet";
+      }
+      articleTemplate.find('.article-buyer').text(buyer);
+
+      if (article[0] == App.account || article[1] != 0x0) {
+        articleTemplate.find('.btn-buy').hide();
+      }
 
       // add this new article
       articlesRow.append(articleTemplate.html());
@@ -104,7 +120,7 @@ App = {
         gas: 500000
       });
     }).then(function(result) {
-      
+
     }).catch(function(err) {
       console.error(err);
     });
@@ -120,6 +136,33 @@ App = {
         $("#events").append('<li class="list-group-item">' + event.args._name + ' is for sale' + '</li>');
         App.reloadArticles();
       });
+
+      instance.buyArticleEvent({}, {
+        fromBlock: 0,
+        toBlock: 'latest'
+      }).watch(function(error, event) {
+        $("#events").append('<li class="list-group-item">' + event.args._buyer + ' bought ' + event.args._name + '</li>');
+        App.reloadArticles();
+      });
+    });
+  },
+
+  buyArticle: function() {
+    event.preventDefault();
+
+    // retrieve the article price
+    var _price = parseInt($(event.target).data('value'));
+
+    App.contracts.ChainList.deployed().then(function(instance) {
+      return instance.buyArticle({
+        from: App.account,
+        value: web3.toWei(_price, "ether"),
+        gas: 500000
+      });
+    }).then(function(result) {
+
+    }).catch(function(err) {
+      console.error(err);
     });
   },
 };
