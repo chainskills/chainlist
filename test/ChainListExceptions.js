@@ -104,7 +104,7 @@ contract('ChainList', function(accounts) {
     }).then(function(data) {
       //make sure sure the contract state was not altered
       assert.equal(data[0], seller, "seller must be " + seller);
-      assert.equal(data[1], buyer, "buyer must be empty");
+      assert.equal(data[1], buyer, "buyer must be " + buyer);
       assert.equal(data[2], articleName, "article name must be " + articleName);
       assert.equal(data[3], articleDescription, "article description must be " + articleDescription);
       assert.equal(data[4].toNumber(), web3.toWei(articlePrice, "ether"), "article price must be " + web3.toWei(articlePrice, "ether"));
