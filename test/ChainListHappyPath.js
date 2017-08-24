@@ -19,9 +19,13 @@ contract('ChainList', function(accounts) {
   // Test case: check initial values
   it("should be initialized with empty values", function() {
     return ChainList.deployed().then(function(instance) {
-      return instance.getNumberOfArticles();
+      chainListInstance = instance;
+      return chainListInstance.getNumberOfArticles();
     }).then(function(data) {
       assert.equal(data, 0x0, "number of articles must be zero");
+      return chainListInstance.getArticlesForSale();
+    }).then(function(data){
+      assert.equal(data.length, 0, "articles for sale should be empty");
     });
   });
 

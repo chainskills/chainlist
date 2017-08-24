@@ -11,17 +11,6 @@ contract('ChainList', function(accounts) {
   var articleDescription = "Description for article 1";
   var articlePrice = 10;
 
-  // Test case: getting articles for sale when no article for sale yet
-  it("should throw an exception if you try to get articles for sale when there is no article at all", function() {
-    return ChainList.deployed().then(function(instance) {
-        chainListInstance = instance;
-        return chainListInstance.getArticlesForSale();
-      }).then(assert.fail)
-      .catch(function(error) {
-        assert(error.message.indexOf('invalid opcode') >= 0, "error message must contain invalid opcode");
-      })
-  });
-
   // Test case: buying an article when no article for sale yet
   it("should throw an exception if you try to buy an article when there is no article for sale", function() {
     return ChainList.deployed().then(function(instance) {
