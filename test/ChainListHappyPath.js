@@ -87,7 +87,7 @@ contract('ChainList', function(accounts) {
       articleId = data[1].toNumber();
       assert.equal(articleId, 2, "article id must be 2");
 
-      return chainListInstance.articles.call(articleId);
+      return chainListInstance.articles(articleId);
     }).then(function(data) {
       assert.equal(data[0].toNumber(), 2, "article id must be 2");
       assert.equal(data[1], seller, "seller must be " + seller);

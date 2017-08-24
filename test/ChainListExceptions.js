@@ -50,7 +50,7 @@ contract('ChainList', function(accounts) {
         });
       }).then(function(receipt) {
         return chainListInstance.buyArticle(2, {
-          from: seller,
+          from: buyer,
           value: web3.toWei(articlePrice, "ether")
         });
       }).then(assert.fail)
