@@ -148,7 +148,11 @@ App = {
         fromBlock: 0,
         toBlock: 'latest'
       }).watch(function(error, event) {
-        $("#events").append('<li class="list-group-item">' + event.args._name + ' is for sale' + '</li>');
+        if (!error) {
+          $("#events").append('<li class="list-group-item">' + event.args._name + ' is for sale' + '</li>');
+        } else {
+          console.error(error);
+        }
         App.reloadArticles();
       });
 
@@ -156,7 +160,11 @@ App = {
         fromBlock: 0,
         toBlock: 'latest'
       }).watch(function(error, event) {
-        $("#events").append('<li class="list-group-item">' + event.args._buyer + ' bought ' + event.args._name + '</li>');
+        if (!error) {
+          $("#events").append('<li class="list-group-item">' + event.args._buyer + ' bought ' + event.args._name + '</li>');
+        } else {
+          console.error(error);
+        }
         App.reloadArticles();
       });
     });
