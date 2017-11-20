@@ -21,7 +21,7 @@ To build, deploy and test your Dapp locally, you need to install the following t
 * **testrpc**: https://github.com/ethereumjs/testrpc
   * Simulates an Ethereum node.
 
-* **Mestamask**: https://metamask.io/
+* **Metamask**: https://metamask.io/
   * Transforms Chrome into a Dapp browser
 
 ## Step 1. Clone the project
