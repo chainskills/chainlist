@@ -163,6 +163,7 @@ truffle(development)> app.kill({from: web3.eth.accounts[0]})
 
 * Is Metamask slow ? try to disable and enable the extension. This happens sometimes, especially when we work with a private chain.
 * When you switch accounts in Metamask, don't forget to refresh the page to make sure you get the current account set in Metamask.
+* When you restart your local node, Metamask caches the old contract and its data. You have to switch Metamask network to any other network then back to the local node to see changes.
 
 ## Learn more
 
