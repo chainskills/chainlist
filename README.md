@@ -139,7 +139,7 @@ truffle(development)> app.sellArticle("Article 1", "Description for Article 1", 
 
 ### Get the number of articles:
 ```
-truffle(development)> app.getNumberArticles()
+truffle(development)> app.getNumberOfArticles()
 ```
 
 ### Get the detail of an article (identified by its ID):
